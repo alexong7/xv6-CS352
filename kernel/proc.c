@@ -510,8 +510,78 @@ void sched(void)
     panic("sched interruptible");
 
   intena = mycpu()->intena;
+  p->swapcount++;
   swtch(&p->context, &mycpu()->context);
   mycpu()->intena = intena;
+}
+
+// Function to get the current process'
+// parent id and returns it.
+uint64 sys_getppid(void)
+{
+  // Call myproc() to get current proc.
+  // Get parent proc, then parent pid.
+  struct proc *p = myproc();
+  return p->parent->pid;
+}
+
+// Returns the number of child processes the current
+// calling process has.
+//
+// If there are children, copies the
+// children's pid to the user array
+uint64 sys_getcpids(void)
+{
+
+  int child_pids[64];
+  int number = 0;
+
+  // get the caller’s struct proc
+  struct proc *p = myproc();
+  struct proc *current_proc;
+
+  // Loop through the proc array (each process).
+  // For each process, compare proc->parent->pid
+  // with our current proc, p-pid.
+  //
+  // Any matches will determine that p is a parent
+  // of the current proc.
+  // Increment a count of children.
+  for (current_proc = proc; current_proc < &proc[NPROC]; current_proc++)
+  {
+
+    // Check for validity (not null) & if child's parent pid matches current
+    // proc ppid
+    if (current_proc && current_proc->parent && current_proc->parent->pid == p->pid)
+    {
+      // Save the child proc pid to child_pids
+      // and increment number
+      child_pids[number] = current_proc->pid;
+      number++;
+    }
+  }
+
+  // get the argument (i.e., address of an array)
+  // passed by the caller
+  uint64 user_array;
+  argaddr(0, &user_array);
+
+  // copy array child_pids from kernel memory
+  // to user memory with address user_array
+  if (copyout(p->pagetable, user_array, (char *)child_pids, number * sizeof(int)) < 0)
+  {
+    return -1;
+  }
+
+  // TODO: return the number of child processes found.
+  return number;
+}
+
+// Return the number of swaps for the
+// the current process.
+int sys_getswapcount(void)
+{
+  return myproc()->swapcount;
 }
 
 // Give up the CPU for one scheduling round.
