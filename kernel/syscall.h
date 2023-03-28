@@ -23,3 +23,8 @@
 #define SYS_getppid 22
 #define SYS_getcpids 23
 #define SYS_getswapcount 24
+
+// New System calls for nice, startcfs, and stopcfs
+#define SYS_nice 25 
+#define SYS_startcfs 26
+#define SYS_stopcfs 27

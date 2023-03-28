@@ -26,6 +26,11 @@ int getppid(void);
 int getcpids(int *cpids);
 int getswapcount(void);
 
+// New system calls for assignment 3
+int nice(int new_nice);
+int startcfs(void);
+int stopcfs(void);
+
 // ulib.c
 int stat(const char *, struct stat *);
 char *strcpy(char *, const char *);

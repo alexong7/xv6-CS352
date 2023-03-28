@@ -39,3 +39,8 @@ entry("uptime");
 entry("getppid");
 entry("getcpids");
 entry("getswapcount");
+
+# New system calls for assignment 3
+entry("nice");
+entry("startcfs");
+entry("stopcfs");

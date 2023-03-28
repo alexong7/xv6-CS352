@@ -3,6 +3,7 @@
         "__locale": "c",
         "cctype": "c",
         "locale": "c",
-        "user.h": "c"
+        "user.h": "c",
+        "__string": "c"
     }
 }
